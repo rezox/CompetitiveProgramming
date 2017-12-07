@@ -1,5 +1,7 @@
 {$mode objfpc}
 program GIT01;
+uses
+  StrUtils, Math;
 var
   Rows, Cols: Integer;
   Table: array[0..100] of AnsiString;
@@ -17,42 +19,27 @@ end;
 function Solve: Integer;
 var
   r, c: Integer;
-  i, j: Integer;
-  Count: Integer;
+  Cost: Integer;
 
 begin
   Result := MaxInt;
+ 
+  Cost := 0;
+  for r := 1 to Rows do
+    for c := 1 to Cols do
+      if Table[r][c] <> IfThen((r + c) and 1 = 1, 'R', 'G')[1] then
+        Inc(Cost, IfThen(Table[r][c] = 'R', 5, 3));
+  if Cost < Result then
+      Result := Cost;
 
-  for i := 0 to Cols do
-  begin // R^iG^(n-i)
-    Count := 0;
-    for r := 1 to Rows do
-    begin
-      for c := 1 to i do
-        if Table[r][c] <> 'R' then
-          Inc(Count);
-      for c := i + 1 to Cols do
-        if Table[r][c] <> 'G' then
-          Inc(Count);
-    end;
-    if Count < Result then
-      Result := Count;
-  end;
-  for i := 0 to Cols do
-  begin // G^iR^(n-i)
-    Count := 0;
-    for r := 1 to Rows do
-    begin
-      for c := 1 to i do
-        if Table[r][c] <> 'G' then
-          Inc(Count);
-      for c := i + 1 to Cols do
-        if Table[r][c] <> 'R' then
-          Inc(Count);
-    end;
-    if Count < Result then
-      Result := Count;
-  end;
+  Cost := 0;
+  for r := 1 to Rows do
+    for c := 1 to Cols do
+      if Table[r][c] <> IfThen((r + c) and 1 = 1, 'G', 'R')[1] then
+        Inc(Cost, IfThen(Table[r][c] = 'R', 5, 3));
+  if Cost < Result then
+      Result := Cost;
+
 
 end;
 
